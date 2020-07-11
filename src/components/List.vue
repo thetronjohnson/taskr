@@ -13,22 +13,35 @@
         @end="drag = false"
       >
         <div
-          class="rounded shadow-lg  list-group-item item"
+          class="rounded shadow-lg list-group-item item"
           v-for="element in cards"
           :key="element.title"
         >
           <div class="card">
             <div class="card-body">
-              <h4 class="card-title" v-show="!showField('title')" @click="focusField('title')">{{ element.title }} </h4>
-              <input v-model="element.title" v-show="showField('title')" type="text"
-               @focus="focusField('title')" @blur="blurField">
+              <label-edit
+                class="card-title"
+                v-bind:text="element.title"
+                placeholder="Enter text value"
+                v-on:text-updated-blur="textUpdateCallbackBlur"
+                v-on:text-updated-enter="textUpdateCallbackEnter"
+              />
 
-              <h5 class="card-subtitle" v-show="!showField('tag')" @click="focusField('tag')" > {{ element.tag }}</h5>
-              <input v-model="element.tag" v-show="showField('tag')" type="text"
-               @focus="focusField('tag')" @blur="blurField">              
-              <p class="card-text" v-show="!showField('text')" @click="focusField('text')">{{ element.text }}</p>
-              <input v-model="element.text" v-show="showField('text')" type="text"
-               @focus="focusField('text')" @blur="blurField">
+              <label-edit
+                class="card-subtitle"
+                v-bind:text="element.tag"
+                placeholder="Enter text value"
+                v-on:text-updated-blur="textUpdateCallbackBlur"
+                v-on:text-updated-enter="textUpdateCallbackEnter"
+              />
+
+              <label-edit
+                class="card-text"
+                v-bind:text="element.text"
+                placeholder="Enter text value"
+                v-on:text-updated-blur="textUpdateCallbackBlur"
+                v-on:text-updated-enter="textUpdateCallbackEnter"
+              />
             </div>
           </div>
         </div>
@@ -45,7 +58,9 @@
         v-bind="dragOptions"
         @start="drag = true"
         @end="drag = false"
-      ></draggable>
+      >
+       
+      </draggable>
     </div>
     <div class="col-3 col">
       <div class="low">Low</div>
@@ -58,29 +73,30 @@
         v-bind="dragOptions"
         @start="drag = true"
         @end="drag = false"
-      ></draggable>
+      >
+    
+      </draggable>
     </div>
     <div class="col-3 col add">
-      <button>Add Card</button>
+      <button @click="addElement">Add Card</button>
     </div>
   </div>
 </template>
 
 <script>
-
-import draggable from 'vuedraggable'
+import draggable from "vuedraggable";
+import LabelEdit from "label-edit";
 
 export default {
   name: "List",
-  components:{
-    draggable
+  components: {
+    draggable,
+    LabelEdit
   },
   data() {
     return {
-      cards: [
-        { 'title': "Add your title here", 'tag': "Add your tag here", 'text': "Add the details here", }
-      ],
-      editField:' '
+      cards: [],
+      text: "Click to edit!"
     };
   },
   computed: {
@@ -93,15 +109,16 @@ export default {
       };
     }
   },
-  methods:{
-    focusField(name){
-      this.editField = name
+  methods: {
+    textUpdated: function(text) {
+      this.text = text;
     },
-    blurField(){
-      this.editField=' '
-    },
-    showField(name){
-      return(this.cards[name]== ' ' || this.editField==name )
+    addElement: function() {
+      this.cards.push({
+        title: "Add your title here",
+        tag: "Add your tag here",
+        text: "Add the details here"
+      });
     }
   }
 };
@@ -140,19 +157,29 @@ export default {
   opacity: 0.5;
   background: #c8ebfb;
 }
-.card{
-    margin-top: 10px;
-    margin-bottom: 5px;
-    text-align: left;
+.card {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-align: left;
 }
-.card:hover{
-    cursor:-moz-grab
+.card:hover {
+  cursor: -moz-grab;
 }
-.card:active{
-    cursor: -moz-grabbing;
+.card:active {
+  cursor: -moz-grabbing;
 }
-.add{
- margin-top: 20vh;
+.add {
+  margin-top: 20vh;
 }
-
+.card-title {
+  font-size: 28px;
+  font-weight: bold;
+}
+.card-subtitle {
+  font-size: 16px;
+  text-transform: uppercase;
+}
+.card-text {
+  font-size: 22px;
+}
 </style>
