@@ -19,9 +19,16 @@
         >
           <div class="card">
             <div class="card-body">
-              <h4 class="card-title" v-html="element.title" />
-              <h5 class="card-subtitle" v-html="element.subtitle" />
-              <p class="card-text" v-html="element.text" />
+              <h4 class="card-title" v-show="!showField('title')" @click="focusField('title')">{{ element.title }} </h4>
+              <input v-model="element.title" v-show="showField('title')" type="text"
+               @focus="focusField('title')" @blur="blurField">
+
+              <h5 class="card-subtitle" v-show="!showField('tag')" @click="focusField('tag')" > {{ element.tag }}</h5>
+              <input v-model="element.tag" v-show="showField('tag')" type="text"
+               @focus="focusField('tag')" @blur="blurField">              
+              <p class="card-text" v-show="!showField('text')" @click="focusField('text')">{{ element.text }}</p>
+              <input v-model="element.text" v-show="showField('text')" type="text"
+               @focus="focusField('text')" @blur="blurField">
             </div>
           </div>
         </div>
@@ -53,6 +60,9 @@
         @end="drag = false"
       ></draggable>
     </div>
+    <div class="col-3 col add">
+      <button>Add Card</button>
+    </div>
   </div>
 </template>
 
@@ -68,11 +78,9 @@ export default {
   data() {
     return {
       cards: [
-        { title: "Title", subtitle: "sub", text: "text" },
-        { title: "Title", subtitle: "sub", text: "text" },
-        { title: "Title", subtitle: "sub", text: "text" },
-        { title: "Title", subtitle: "sub", text: "text" }
-      ]
+        { 'title': "Add your title here", 'tag': "Add your tag here", 'text': "Add the details here", }
+      ],
+      editField:' '
     };
   },
   computed: {
@@ -83,6 +91,17 @@ export default {
         disabled: false,
         ghostClass: "ghost"
       };
+    }
+  },
+  methods:{
+    focusField(name){
+      this.editField = name
+    },
+    blurField(){
+      this.editField=' '
+    },
+    showField(name){
+      return(this.cards[name]== ' ' || this.editField==name )
     }
   }
 };
@@ -124,6 +143,7 @@ export default {
 .card{
     margin-top: 10px;
     margin-bottom: 5px;
+    text-align: left;
 }
 .card:hover{
     cursor:-moz-grab
@@ -131,4 +151,8 @@ export default {
 .card:active{
     cursor: -moz-grabbing;
 }
+.add{
+ margin-top: 20vh;
+}
+
 </style>
